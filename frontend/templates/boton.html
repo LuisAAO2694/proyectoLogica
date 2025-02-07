@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador</title>
+    <script>
+        function incrementarContador() {
+            fetch("/incrementar", { method: "POST" })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("contador").innerText = data.contador;
+                });
+        }
+    </script>
+</head>
+<body>
+    <h1>Página del Botón</h1>
+    <p id="contador">{{ contador }}</p>
+    <button onclick="incrementarContador()">Incrementar</button>
+    <br><br>
+    <a href="/">Volver al menú</a>
+</body>
+</html>
