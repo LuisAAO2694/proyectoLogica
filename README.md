@@ -56,9 +56,10 @@ If you'd like to request a new function, feel free to do so by opening an issue 
 
 ## Team
 
-[![Santiago](https://avatars.githubusercontent.com/u/179622935?v=4)](https://github.com/SantiagoRL48)  | [![Jaime](https://avatars1.githubusercontent.com/u/181144378?v=4)](https://github.com/Jgalvan33?tab=overview&from=2025-02-01&to=2025-02-07) | [![Luis](https://avatars.githubusercontent.com/u/134182285?s=400&v=4)](https://github.com/LuisAAO2694)
----|---
-[Santiago](https://github.com/iharsh234) |[Jaime](https://www.quandl.com) |[Luis](https://www.quandl.com)
+| [![Santiago](https://avatars.githubusercontent.com/u/179622935?v=4)](https://github.com/SantiagoRL48)  | [![Jaime](https://avatars.githubusercontent.com/u/181144378?v=4)](https://github.com/Jgalvan33) | [![Luis](https://avatars.githubusercontent.com/u/134182285?v=4)](https://github.com/LuisAAO2694) |
+|---|---|---|
+| [Santiago](https://github.com/SantiagoRL48) | [Jaime](https://github.com/Jgalvan33) | [Luis](https://github.com/LuisAAO2694) |
+
 
 
 
