@@ -49,9 +49,11 @@ If you'd like to request a new function, feel free to do so by opening an issue 
 
 ## Herramientas utilizadas
 
-- [jQuery - Ajax](http://www.w3schools.com/jquery/jquery_ref_ajax.asp) - jQuery simplifies HTML document traversing, event handling, animating, and Ajax interactions for rapid web development.
-- [Google Chart API](https://developers.google.com/chart/interactive/docs/quick_start) - Free , Rich Gallery , Customizable and Cross-browser compatible.
-- [Bootstrap](http://getbootstrap.com/) - Extensive list of components and  Bundled Javascript plugins.
+- [Python 3](https://www.python.org/) - Lenguaje base del proyecto, utilizado para la lógica principal.  
+- [Flask](https://flask.palletsprojects.com/en/stable/) - Framework usado para la parte del frontend y el diseño de la aplicación.  
+- [FastAPI](https://fastapi.tiangolo.com/) - Usado como servidor backend, encargado de manejar la lógica del proyecto.  
+- [Vercel](https://vercel.com/) - Plataforma utilizada para desplegar el proyecto en la web.  
+
 
 
 ## Team
