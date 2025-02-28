@@ -27,5 +27,10 @@ def incrementar():
     data = response.json()
     return jsonify(data)  # Devuelve el nuevo contador en JSON
 
+@app.route("/front")
+def front():
+    return render_template("front.html")  # Menú principal
+    
+
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=5000)
