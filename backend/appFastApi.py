@@ -1,75 +1,91 @@
 from fastapi import FastAPI
-from typing import Dict #forma parar indicar que voy a devolver un diccionario 
+from typing import Dict, List #forma parar indicar que voy a devolver un diccionario 
 import uvicorn
 import re
+from itertools import product
 
 app = FastAPI()
 
-contador = 0  # Variable para el contador
+def normalizar_espacios(expresion: str) -> str:
+    """Agrega espacios alrededor de los operadores lógicos si no los tiene"""
+    operadores = ["∧", "∨", "¬", "&", "|", "~", "and", "or", "not", "^", "v", "-"]
+    for operador in operadores:
+        expresion = expresion.replace(operador, f" {operador} ")
+    return " ".join(expresion.split())
 
-@app.get("/ping")
-def ping():
-    return {"message": "pong desde FastAPI"}
-
-@app.get("/contador")
-def obtener_contador():
-    return {"contador": contador}
-
-@app.post("/incrementar")
-def incrementar_contador():
-    global contador
-    contador += 1
-    return {"contador": contador}
-
-#---------------------------------------
 def convertir_expresion(expresion: str) -> str:
     """Convierte la expresión lógica a operadores de Python"""
+    expresion = normalizar_espacios(expresion)
     conversiones = {
-        "∧": "and",  # Y lógico
-        "∨": "or",   # O lógico
-        "¬": "not",  # No lógico
-        "&": "and",  # AND en simbolo
-        "|": "or",   # OR en simbolo
-        "~": "not"   # NOT en simbolo
+        "∧": "and", #Y lógico
+        "∨": "or", #O lógico
+        "¬": "not", #No lógico
+        "&": "and", #AND en símbolo
+        "|": "or", #OR en símbolo
+        "~": "not", #NOT en símbolo
+        "and": "and", #AND en notación alternativa
+        "or": "or", #OR en notación alternativa
+        "not": "not", #NOT en notación alternativa
+        "^": "and", #Otro simbolo equivalente para and
+        "v": "or", #Otro simbolo equivalente para or  
+        "-": "not" #Otro simbolo equivalente para not
     }
-    
-    # Reemplazamos cada símbolo por su equivalente en Python
     for simbolo, reemplazo in conversiones.items():
         expresion = expresion.replace(simbolo, reemplazo)
-    
     return expresion
 
+def extraer_variables(expresion: str) -> list:
+    """Extrae las variables (p, q, r, etc.) de la expresión"""
+    # Busca letras individuales que no formen parte de palabras como "and", "or", "not"
+    palabras = normalizar_espacios(expresion).split()
+    variables = set()
+    for palabra in palabras:
+        if re.match(r"^[a-z]$", palabra):  # Solo letras individuales de a-z
+            variables.add(palabra)
+    return sorted(list(variables))  # Ordenadas para consistencia
 
 def generar_tabla_verdad(expresion: str) -> Dict:
-    """Genera una tabla de verdad para p y q"""
-    variables = ["p", "q"]
+    """Genera una tabla de verdad para la expresión dada"""
+    variables = extraer_variables(expresion)
+    if not variables:
+        return {"error": "No se encontraron variables válidas en la expresión"}
+    if len(variables) > 5:  # Limitamos a 5 por el requerimiento base
+        return {"error": "La expresión contiene más de 5 variables"}
+
     resultados = []
+    expresion_convertida = convertir_expresion(expresion)
 
-    #Se evalúa la expresión lógica con todos los valores posibles de p y q
-    for p in [False, True]:
-        for q in [False, True]:
-            contexto = {"p": p, "q": q}
-            try:
-                #Evaluamos la expresión convertida, usando eval en un entorno controlado
-                resultado = eval(expresion, {}, contexto)
-                resultados.append({"p": p, "q": q, "resultado": resultado})
-            except Exception as e:
-                return {"error": f"Expresión inválida: {str(e)}"}
+    # Generar todas las combinaciones posibles de valores de verdad
+    combinaciones = list(product([False, True], repeat=len(variables)))
 
-    return resultados
+    for combinacion in combinaciones:
+        contexto = dict(zip(variables, combinacion))  # Asocia cada variable con su valor
+        try:
+            resultado = eval(expresion_convertida, {}, contexto)
+            fila = {**contexto, "resultado": resultado}
+            resultados.append(fila)
+        except Exception as e:
+            return {"error": f"Expresión inválida: {str(e)}"}
 
-
+    return {"variables": variables, "tabla": resultados}
 
 @app.post("/tabla_verdad")
 def obtener_tabla_verdad(data: Dict[str, str]):
     expresion_original = data.get("expresion", "")
+    if not expresion_original:
+        return {"error": "No se proporcionó una expresión"}
+    
     expresion_convertida = convertir_expresion(expresion_original)
-    tabla = generar_tabla_verdad(expresion_convertida)
+    tabla = generar_tabla_verdad(expresion_original)
+    
+    if "error" in tabla:
+        return tabla  # Devolver el error si lo hay
     
     return {
         "expresion_original": expresion_original,
         "expresion_convertida": expresion_convertida,
-        "tabla_verdad": tabla
+        "variables": tabla["variables"],
+        "tabla_verdad": tabla["tabla"]
     }
 
 if __name__ == "__main__":  
