@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Truth Table Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&display=swap" rel="stylesheet">
+
     <style>
         body {
             display: flex;
@@ -14,28 +15,27 @@
             height: 75vh;
             background: linear-gradient(to right, #000000, #b8b8b8);
             font-family: Arial, sans-serif;
-            position: relative;
         }
-        h1 
-        {
+        h1 {
             font-family: 'Source Sans Pro', Arial, sans-serif;
-            font-weight: 600; 
+            font-weight: 600;
             color: white;
         }
         .container {
             text-align: center;
-            /* background: rgba(255, 255, 255, 0); */
             padding: 20px;
             border-radius: 10px;
-            /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); */
-            position: relative;
         }
         input {
-            width: 80%;
+            width: 208%;
+            max-width: none;
             padding: 10px;
             margin: 10px 0;
-            border: 1px solid #cccccc00;
+            border: 1px solid transparent;
             border-radius: 5px;
+            position: relative;
+            left: 50%;  /*Muevo el input hacia la derecha*/
+            transform: translateX(-50%);  /*Corrijo el desbordamiento y se centra*/
         }
         .generate-button {
             padding: 10px 20px;
@@ -62,62 +62,51 @@
             font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
+            background: #156794;
+            color: white;
         }
-        .clear-button { background: #156794; color: white; }
-        .clear-button:hover { background: #1e88c9; }
-        .help-button { background: #156794; color: white; }
-        .help-button:hover { background: #1e88c9; }
-        .extra-button { background: #156794; color: white; }
-        .extra-button:hover { background: #1e88c9; }
-        .option-button { background: #156794; color: white; }
-        .option-button:hover { background: #1e88c9; }
-        .settings-button { background: #156794; color: white; }
-        .settings-button:hover { background: #1e88c9; }
-        .info-button { background: #156794; color: white; }
-        .info-button:hover { background: #1e88c9; }
+        .buttons-container button:hover {
+            background: #1e88c9;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Truth Table Generator</h1>
-        <input type="text" id="formula" placeholder="Type your formula...">
-        <br>
-        <br>
+        <input type="text" id="formula" placeholder="Type your formula..." oninput="convertToLowerCase()">
+        <script>
+            function convertToLowerCase() 
+            {
+                const inputElement = document.getElementById("formula");
+                inputElement.value = inputElement.value.toLowerCase();
+            }
+        </script>
+        <br><br>
         <button class="generate-button" onclick="generateTable()">Generate</button>
     </div>
+
     <div class="buttons-container">
-        <button class="clear-button" onclick="clearInput()">^ / & / and</button>
-        <button class="help-button" onclick="showHelp()">v / | / or</button>
-        <button class="extra-button" onclick="extraFunction()">~ / ! / not</button>
-        <button class="option-button" onclick="optionFunction()">xor / ⊕</button>
-        <button class="settings-button" onclick="settingsFunction()">> / -> / =></button>
-        <button class="info-button" onclick="infoFunction()">= / <=></button>
+        <button onclick="insertSymbol('^')">^ / & / and</button>
+        <button onclick="insertSymbol('v')">v / | / or</button>
+        <button onclick="insertSymbol('~')">~ / ! / not</button>
+        <button onclick="insertSymbol('⊕')">xor / ⊕</button>
+        <button onclick="insertSymbol('->')">> / -> / =></button>
+        <button onclick="insertSymbol('<=>')">= / <=></button>
     </div>
     
     <script>
-        function generateTable() {
+        function generateTable() 
+        {
             const formula = document.getElementById("formula").value;
             console.log("Formula entered:", formula);
         }
-        function clearInput() {
-            document.getElementById("formula").value = "";
+        
+        function insertSymbol(symbol) 
+        {
+            document.getElementById("formula").value += `${symbol}`;
         }
-        function showHelp() {
-            alert("Enter a logical formula using AND, OR, NOT operators.");
-        }
-        // function extraFunction() {
-        //     alert("Extra button clicked!");
-        // }
-        // function optionFunction() {
-        //     alert("Option button clicked!");
-        // }
-        // function settingsFunction() {
-        //     alert("Settings button clicked!");
-        // }
-        // function infoFunction() {
-        //     alert("Info button clicked!");
-        // }
     </script>
+
 </body>
 </html>
-
