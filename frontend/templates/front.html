@@ -5,21 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Truth Table Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&display=swap" rel="stylesheet">
-
     <style>
         body {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 75vh;
+            min-height: 100vh;
             background: linear-gradient(to right, #000000, #b8b8b8);
             font-family: Arial, sans-serif;
+            margin: 0;
         }
         h1 {
             font-family: 'Source Sans Pro', Arial, sans-serif;
             font-weight: 600;
             color: white;
+            margin-bottom: 20px;
         }
         .container {
             text-align: center;
@@ -27,6 +28,13 @@
             border-radius: 10px;
         }
         input {
+            /* width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            font-size: 16px; */
             width: 208%;
             max-width: none;
             padding: 10px;
@@ -68,18 +76,50 @@
         .buttons-container button:hover {
             background: #1e88c9;
         }
+        .result-container {
+            margin-top: 20px;
+            color: white;
+            width: 80%;
+            max-width: 800px;
+        }
+        .expression-info {
+            margin-bottom: 15px;
+        }
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            background-color: #34495e;
+        }
+        .truth-table th, .truth-table td {
+            padding: 10px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+        .truth-table th {
+            background-color: #2c3e50;
+            color: white;
+        }
+        .truth-table td {
+            color: white;
+        }
+        .truth-table .true {
+            color: #2ecc71; /* Verde para V */
+        }
+        .truth-table .false {
+            color: #e74c3c; /* Rojo para F */
+        }
     </style>
 </head>
-
 <body>
     <div class="container">
         <h1>Truth Table Generator</h1>
         <input type="text" id="formula" placeholder="Type your formula..." oninput="convertToLowerCase()">
         <script>
-            function convertToLowerCase() 
-            {
+            function convertToLowerCase() {
                 const inputElement = document.getElementById("formula");
                 inputElement.value = inputElement.value.toLowerCase();
+                inputElement.value = inputElement.value.toLowerCase().replace(/v/g, '');
             }
         </script>
         <br><br>
@@ -88,25 +128,116 @@
 
     <div class="buttons-container">
         <button onclick="insertSymbol('^')">^ / & / and</button>
-        <button onclick="insertSymbol('v')">v / | / or</button>
+        <button onclick="insertSymbol('∨')">∨ / | / or</button>
         <button onclick="insertSymbol('~')">~ / ! / not</button>
         <button onclick="insertSymbol('⊕')">xor / ⊕</button>
-        <button onclick="insertSymbol('->')">> / -> / =></button>
-        <button onclick="insertSymbol('<=>')">= / <=></button>
+        <button onclick="insertSymbol('→')">→ / -> / =></button>
+        <button onclick="insertSymbol('↔')">↔ / <=></button>
     </div>
-    
+
+    <div id="result" class="result-container"></div>
+
     <script>
-        function generateTable() 
-        {
+        function generateTable() {
             const formula = document.getElementById("formula").value;
+            if (!formula) {
+                document.getElementById("result").innerHTML = '<p style="color: red; text-align: center; font-weight: bold;">Por favor, ingresa una fórmula.</p>';
+                return;
+            }
             console.log("Formula entered:", formula);
+
+            fetch('http://127.0.0.1:8000/tabla_verdad', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ "expresiones": [formula] })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Response from backend:", data);
+                const resultDiv = document.getElementById("result");
+                resultDiv.innerHTML = ""; // Limpiar contenido previo
+
+                if (data.error) {
+                    resultDiv.innerHTML = `<p style="color: red; text-align: center; font-weight: bold;">Error: ${data.error}</p>`;
+                    return;
+                }
+                if (!data.resultados || data.resultados.length === 0) {
+                    resultDiv.innerHTML = `<p style="color: red; text-align: center; font-weight: bold;">No se encontraron resultados.</p>`;
+                    return;
+                }
+
+                const result = data.resultados[0];
+                if (!result.variables || !result.subexpresiones || !result.tabla_verdad) {
+                    resultDiv.innerHTML = `<p style="color: red; text-align: center; font-weight: bold;">Datos incompletos o inválidos.</p>`;
+                    return;
+                }
+
+                displayTruthTable(result);
+            })
+            .catch(error => {
+                document.getElementById("result").innerHTML = `<p style="color: red; text-align: center; font-weight: bold;">Error: ${error.message}</p>`;
+            });
         }
-        
-        function insertSymbol(symbol) 
-        {
-            document.getElementById("formula").value += `${symbol}`;
+
+        function insertSymbol(symbol) {
+            const input = document.getElementById("formula");
+            input.value += symbol;
+        }
+
+        function displayTruthTable(result) {
+            const resultDiv = document.getElementById("result");
+            /*
+            // Mostrar expresión original y convertida
+            const infoDiv = document.createElement("div");
+            infoDiv.className = "expression-info";
+            infoDiv.innerHTML = `
+                <p><strong>Expresión original:</strong> ${result.expresion_original}</p>
+                <p><strong>Expresión convertida:</strong> ${result.expresion_convertida}</p>
+            `;
+            resultDiv.appendChild(infoDiv);
+            */
+
+            // Crear tabla
+            const table = document.createElement("table");
+            table.className = "truth-table";
+
+            // Encabezado
+            const headerRow = document.createElement("tr");
+            result.variables.forEach(varName => {
+                const th = document.createElement("th");
+                th.textContent = varName;
+                headerRow.appendChild(th);
+            });
+            result.subexpresiones.forEach(subexp => {
+                const th = document.createElement("th");
+                th.textContent = subexp;
+                headerRow.appendChild(th);
+            });
+            table.appendChild(headerRow);
+
+            // Filas con datos
+            result.tabla_verdad.forEach(row => {
+                const tr = document.createElement("tr");
+                result.variables.forEach(varName => {
+                    const td = document.createElement("td");
+                    td.textContent = row[varName] ? "V" : "F";
+                    td.className = row[varName] ? "true" : "false";
+                    tr.appendChild(td);
+                });
+                result.subexpresiones.forEach(subexp => {
+                    const td = document.createElement("td");
+                    const value = row.pasos[subexp];
+                    td.textContent = value ? "V" : "F";
+                    td.className = value ? "true" : "false";
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+
+            resultDiv.appendChild(table);
         }
     </script>
-
 </body>
 </html>
