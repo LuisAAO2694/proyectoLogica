@@ -16,7 +16,7 @@ app.add_middleware(
     allow_headers=["*"],  # Permitir todos los headers
 )
 
-#-----------------------Version de produccion-----------------------
+#-----------------------Version de produccionv2-----------------------
 
 def normalizar_espacios(expresion: str) -> str:
     """Agrega espacios alrededor de los operadores lógicos si no los tiene y elimina paréntesis"""
