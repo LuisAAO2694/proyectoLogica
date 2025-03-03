@@ -19,11 +19,14 @@ app.add_middleware(
 #-----------------------Version de produccion-----------------------
 
 def normalizar_espacios(expresion: str) -> str:
-    """Agrega espacios alrededor de los operadores lógicos si no los tiene"""
+    """Agrega espacios alrededor de los operadores lógicos si no los tiene y elimina paréntesis"""
     operadores = ["∧", "∨", "¬", "&", "|", "~", "and", "or", "not", "^", "v", "-", "→", "↔"]
     for operador in operadores:
         expresion = expresion.replace(operador, f" {operador} ")
+    # Eliminar paréntesis
+    expresion = expresion.replace("(", "").replace(")", "")
     return " ".join(expresion.split())
+
 
 def convertir_expresion(expresion: str) -> str:
     """Convierte símbolos a palabras clave estándar"""
@@ -221,14 +224,18 @@ def evaluar_subpila(subpila: List, contexto: Dict[str, bool]) -> bool:
 def generar_tabla_verdad(expresion: str) -> Dict:
     """Genera una tabla de verdad con pasos intermedios sin eval()"""
     variables = extraer_variables(expresion)
+    
     if not variables:
         return {"error": "No se encontraron variables válidas en la expresión"}
+    
+    if len(variables) == 1 and expresion.strip() in variables:
+        return {"error": "La expresión no es válida, debe contener al menos un operador lógico"}
+    
     if len(variables) > 5:
         return {"error": "La expresión contiene más de 5 variables"}
 
     subexpresiones = identificar_subexpresiones(expresion)
     resultados = []
-
     combinaciones = list(product([False, True], repeat=len(variables)))
 
     for combinacion in combinaciones:
@@ -249,6 +256,7 @@ def generar_tabla_verdad(expresion: str) -> Dict:
         resultados.append(fila)
 
     return {"variables": variables, "subexpresiones": subexpresiones, "tabla": resultados}
+
 
 @app.post("/tabla_verdad")
 def obtener_tabla_verdad(data: Dict[str, List[str]]):
