@@ -40,7 +40,7 @@ git clone https://github.com/LuisAAO2694/proyectoLogica.git
 ```
 
 ### 2️⃣ Crear y Activar el Entorno Virtual
-Ya que tenemos nuestrroo repo clonado necesitamos entrar a la carpeta correspondiente que es 
+Ya que tenemos nuestro repo clonado necesitamos entrar a la carpeta correspondiente que es 
 
 ```sh
 cd proyectoLogica
