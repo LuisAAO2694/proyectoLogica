@@ -2,58 +2,149 @@
 <table>
 <tr>
 <td>
-  Avances de proyecto Tablas de verdad
+Generador de Tablas de Verdad
+
+Este proyecto es una aplicación web que genera tablas de verdad a partir de expresiones lógicas. 
+Utiliza **FastAPI** como backend y **Flask** como frontend.
 </td>
 </tr>
 </table>
 
 
-## Demo
-Aquí hay una demostración en vivo funcionando : 
+## 🚀 Como probar nuestro generador
+A continuacion se dejan las instrucciones para ejecutar nuestro proyecto:
+
+Asegúrate de tener instalados los siguientes programas:
+
+1. **Python 3.8 o superior**  
+   - Verifica si está instalado ejecutando:
+     ```sh
+     python --version
+     ```
+   - Si no lo tienes, descárgalo de [python.org](https://www.python.org/downloads/)
+
+2. **Git** (para clonar el repositorio)  
+   - Verifica si está instalado con:
+     ```sh
+     git --version
+     ```
+   - Si no lo tienes, descárgalo desde [git-scm.com](https://git-scm.com/downloads)
+
+---
+
+## 📂 Instalación
+### 1️⃣ Clonar el Repositorio
+Abre una terminal o consola y ejecuta:
+```sh
+git clone https://github.com/LuisAAO2694/proyectoLogica.git
+```
+
+### 2️⃣ Crear y Activar el Entorno Virtual
+Ya que tenemos nuestrroo repo clonado necesitamos entrar a la carpeta correspondiente que es 
+
+```sh
+cd proyectoLogica
+```
+Ya en la carpeta corremos los siguientes comandos en la terminal
+
+**En Windows:**
+```sh
+python -m venv venv
+venv\Scripts\activate
+```
+
+Verifica que el entorno esté activo, debería aparecer `(venv)` al inicio de la línea de comandos.
+
+### 3️⃣ Instalar Dependencias
+Ejecuta el siguiente comando para instalar todas las dependencias necesarias esto en la carpeta raíz (proyectoLogica):
+
+**En Windows:**
+```sh
+pip install flask fastapi uvicorn requests
+```
+
+**En Mac\Linux:**
+```sh
+pip3 install flask fastapi uvicorn requests
+```
+
+---
+
+## ▶️ Ejecución del Proyecto
+
+### **1️⃣ Iniciar el Backend (FastAPI)**
+Ejecuta los siguientes comandos:
+
+**En Windows:**
+```sh
+cd backend
+python app_fastapi.py
+```
+
+**En Mac\Linux:**
+```sh
+cd backend
+python3 app_fastapi.py
+```
+
+Si todo está correcto, verás un mensaje indicando que el servidor FastAPI está corriendo en:
+```
+INFO:     Uvicorn running on http://127.0.0.1:8000
+```
+Puedes probarlo visitando en tu navegador:  
+👉 [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+### **2️⃣ Iniciar el Frontend (Flask)**
+Abre una **nueva terminal**, activa el entorno virtual si es necesario y ejecuta:
+
+**En Windows:**
+```sh
+cd frontend
+python app_flask.py
+```
+
+**En Mac\Linux:**
+```sh
+cd frontend
+python3 app_flask.py
+```
+Si todo está correcto, verás un mensaje indicando que el servidor Flask está corriendo en:
+```
+ * Running on http://127.0.0.1:5000/
+```
+Puedes abrirlo en tu navegador:  
+👉 [http://127.0.0.1:5000](http://127.0.0.1:5000)
+
+---
+
+## Página de destino
+
+![](demo.png)
+
+### **Desarrollo**  
+¿Quieres contribuir? ¡Genial!  
+
+Para corregir un error o mejorar un módulo existente, sigue estos pasos:  
+
+- Haz un **fork** del repositorio.  
+- Crea una nueva rama (`git checkout -b mejorar-funcionalidad`).  
+- Realiza los cambios correspondientes en los archivos.  
+- Asegúrate de reflejar correctamente los cambios realizados.  
+- Confirma tus cambios (`git commit -m 'Mejorar funcionalidad'`).  
+- Sube los cambios a la rama (`git push origin mejorar-funcionalidad`).  
+- Crea un **Pull Request**.  
+
+### **🛠 Solución de Problemas**  
+Si encuentras un error (por ejemplo, el sitio web no puede procesar la consulta o devuelve resultados inesperados), abre un **issue** [[aquí](https://github.com/LuisAAO2694/proyectoLogica/issues)] e incluye la consulta que realizaste y el resultado esperado.  
 
 
-## Site
-
-### Landing Page
-Currently it is working on all NSE () Stocks, BSE () Stocks Symbol will be added soon.
-
-![](https://iharsh234.github.io/WebApp/images/demo/web_app_face.JPG)
-
-### Query Filled Form
-
-
-### Charts
-
-
-## [Usage]() 
-
-### Development
-Want to contribute? Great!
-
-To fix a bug or enhance an existing module, follow these steps:
-
-- Fork the repo
-- Create a new branch (`git checkout -b improve-feature`)
-- Make the appropriate changes in the files
-- Add changes to reflect the changes made
-- Commit your changes (`git commit -am 'Improve feature'`)
-- Push to the branch (`git push origin improve-feature`)
-- Create a Pull Request 
-
-### Bug / Feature Request
-
-If you find a bug (the website couldn't handle the query and / or gave undesired results), kindly open an issue [here]() by including your search query and the expected result.
-
-If you'd like to request a new function, feel free to do so by opening an issue [here](). Please include sample queries and their corresponding results.
-
-
-## Herramientas utilizadas
+## 🎯 Tecnologías Utilizadas
 
 - [Python 3](https://www.python.org/) - Lenguaje base del proyecto, utilizado para la lógica principal.  
 - [Flask](https://flask.palletsprojects.com/en/stable/) - Framework usado para la parte del frontend y el diseño de la aplicación.  
-- [FastAPI](https://fastapi.tiangolo.com/) - Usado como servidor backend, encargado de manejar la lógica del proyecto.  
-- [Vercel](https://vercel.com/) - Plataforma utilizada para desplegar el proyecto en la web.  
-
+- [FastAPI](https://fastapi.tiangolo.com/) - Usado como servidor backend, encargado de manejar la lógica del proyecto.   
+- **Uvicorn** (Servidor ASGI)
+- **HTML + CSS**
 
 
 ## Team
@@ -63,7 +154,7 @@ If you'd like to request a new function, feel free to do so by opening an issue 
 | [Santiago](https://github.com/SantiagoRL48) | [Jaime](https://github.com/Jgalvan33) | [Luis](https://github.com/LuisAAO2694) |
 
 
+👨‍💻 **Desarrollado por:** Lombardi Team - ITESO © 
 
-
-ITESO © [Team name]
-
+## 📜 Licencia
+Este proyecto es de código abierto bajo la licencia MIT.
