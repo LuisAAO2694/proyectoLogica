@@ -223,7 +223,7 @@ def evaluar_subpila(subpila: List, contexto: Dict[str, bool]) -> bool:
 
 def validar_expresion(expresion: str) -> str:
     """Valida la sintaxis de la expresión lógica."""
-    expresion = expresion.replace(" ", "")  # Eliminar espacios innecesarios
+    expresion = expresion.replace(" ", "")
     
     # Validar balanceo de paréntesis
     balance = 0
