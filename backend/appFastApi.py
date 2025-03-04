@@ -221,8 +221,35 @@ def evaluar_subpila(subpila: List, contexto: Dict[str, bool]) -> bool:
     else:
         return None  # Error
 
+def validar_expresion(expresion: str) -> str:
+    """Valida la sintaxis de la expresión lógica."""
+    expresion = expresion.replace(" ", "")  # Eliminar espacios innecesarios
+    
+    # Validar balanceo de paréntesis
+    balance = 0
+    for char in expresion:
+        if char == "(":
+            balance += 1
+        elif char == ")":
+            balance -= 1
+        if balance < 0:
+            return "Error: Paréntesis no balanceados."
+    if balance != 0:
+        return "Error: Paréntesis no balanceados."
+    
+    # Validar operadores mal escritos o símbolos no reconocidos
+    if re.search(r"[^a-z∧∨¬&|~andornot^v\-→↔() ]", expresion):
+        return "Error: La expresión contiene caracteres no válidos."
+    
+    return "OK"
+
+
 def generar_tabla_verdad(expresion: str) -> Dict:
     """Genera una tabla de verdad con pasos intermedios sin eval()"""
+    validacion = validar_expresion(expresion)
+    if validacion != "OK":
+        return {"error": validacion}
+    
     variables = extraer_variables(expresion)
     
     if not variables:
@@ -233,11 +260,11 @@ def generar_tabla_verdad(expresion: str) -> Dict:
     
     if len(variables) > 5:
         return {"error": "La expresión contiene más de 5 variables"}
-
+    
     subexpresiones = identificar_subexpresiones(expresion)
     resultados = []
     combinaciones = list(product([False, True], repeat=len(variables)))
-
+    
     for combinacion in combinaciones:
         contexto = dict(zip(variables, combinacion))
         fila = dict(contexto)
@@ -254,8 +281,9 @@ def generar_tabla_verdad(expresion: str) -> Dict:
         
         fila["pasos"] = pasos
         resultados.append(fila)
-
+    
     return {"variables": variables, "subexpresiones": subexpresiones, "tabla": resultados}
+
 
 
 @app.post("/tabla_verdad")
