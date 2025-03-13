@@ -221,8 +221,30 @@ def evaluar_subpila(subpila: List, contexto: Dict[str, bool]) -> bool:
     else:
         return None  # Error
 
+# def validar_expresion(expresion: str) -> str:
+#     """Valida la sintaxis de la expresión lógica."""
+#     expresion = expresion.replace(" ", "")
+    
+#     # Validar balanceo de paréntesis
+#     balance = 0
+#     for char in expresion:
+#         if char == "(":
+#             balance += 1
+#         elif char == ")":
+#             balance -= 1
+#         if balance < 0:
+#             return "Error: Paréntesis no balanceados."
+#     if balance != 0:
+#         return "Error: Paréntesis no balanceados."
+    
+#     # Validar operadores mal escritos o símbolos no reconocidos
+#     if re.search(r"[^a-z∧∨¬&|~andornot^v\-→↔() ]", expresion):
+#         return "Error: La expresión contiene caracteres no válidos."
+    
+#     return "OK"
+
 def validar_expresion(expresion: str) -> str:
-    """Valida la sintaxis de la expresión lógica."""
+    """Valida la sintaxis de la expresión lógica, asegurando que los operadores tengan operandos válidos."""
     expresion = expresion.replace(" ", "")
     
     # Validar balanceo de paréntesis
@@ -237,11 +259,34 @@ def validar_expresion(expresion: str) -> str:
     if balance != 0:
         return "Error: Paréntesis no balanceados."
     
-    # Validar operadores mal escritos o símbolos no reconocidos
-    if re.search(r"[^a-z∧∨¬&|~andornot^v\-→↔() ]", expresion):
+    # Validar caracteres no reconocidos
+    if re.search(r"[^a-z∧∨¬&|~andornot^v\-→↔()]", expresion):
         return "Error: La expresión contiene caracteres no válidos."
     
+    # Verificar operadores sin operandos
+    tokens = normalizar_espacios(expresion).split()
+    operadores_binarios = {"∧", "∨", "&", "|", "and", "or", "^", "v", "→", "↔"}
+    operadores_unarios = {"¬", "~", "not", "-"}
+    
+    if not tokens:
+        return "Error: La expresión está vacía."
+    
+    # No debe iniciar ni terminar con un operador binario
+    if tokens[0] in operadores_binarios or tokens[-1] in operadores_binarios:
+        return "Error: Operador binario sin operandos."
+    
+    # Recorrer tokens para verificar operadores sin operandos
+    for i, token in enumerate(tokens):
+        if token in operadores_binarios:
+            if i == 0 or i == len(tokens) - 1 or tokens[i-1] in operadores_binarios or tokens[i+1] in operadores_binarios:
+                return "Error: Operador binario sin operandos."
+        elif token in operadores_unarios:
+            if i == len(tokens) - 1 or tokens[i+1] in operadores_binarios:
+                return "Error: Operador unario sin operando."
+    
     return "OK"
+
+
 
 
 def generar_tabla_verdad(expresion: str) -> Dict:
